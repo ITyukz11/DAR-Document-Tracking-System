@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Fragment, useState } from 'react'
 import { MdClose, MdSearch } from 'react-icons/md'
 import { useDatas } from '@/pages/api/Datas';
+import GeneralTable from '../tables/GeneralTable';
 
 export default function ViewModal(props) {
   const { isLaptop } = useDatas()
@@ -68,8 +69,7 @@ export default function ViewModal(props) {
                         onClick={() => setSearchQuery('')}
                       />
                     </div>
-                    <div>Description: <label className='font-semibold shadow-sm'>{props.data.description}</label>
-                    </div>
+                
                     <div className='flex flex-row gap-2'>
                   
                       <MdClose
@@ -80,8 +80,8 @@ export default function ViewModal(props) {
                     
                   </div>
                   <div className='border-t border-navy-primary pt-2'>
-                        table here
-                    {/* <GeneralTable tableData={filteredData} /> */}
+                      
+                   <GeneralTable tableData={filteredData} /> 
                   </div>
 
                 </Dialog.Panel>

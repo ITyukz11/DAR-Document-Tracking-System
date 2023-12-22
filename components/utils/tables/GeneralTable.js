@@ -116,7 +116,7 @@ export default function GeneralTable(props) {
      {currentData.map((row, rowIndex) => (
        <tr
          key={rowIndex}
-         className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-grey-primary hover:cursor-pointer`}
+         className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-fb-2 hover:cursor-pointer`}
          onClick={() => {setData(row);handleUseThisQueryModal(row)}}
        >
          {Object.values(row).map((cell, cellIndex) => (
@@ -141,14 +141,14 @@ export default function GeneralTable(props) {
           <button
             onClick={startPage}
             disabled={currentPage === 1}
-            className="bg-navy-primary text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
+            className="bg-fb-4 text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
           >
             Start
           </button>
           <button
             onClick={prevPage}
             disabled={currentPage === 1}
-            className="bg-navy-primary text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
+            className="bg-fb-4 text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
           >
             Previous
           </button>
@@ -158,14 +158,14 @@ export default function GeneralTable(props) {
           <button
             onClick={nextPage}
             disabled={currentPage === Math.ceil(props.tableData.length / itemsPerPage) || props.tableData.length == 0}
-            className="bg-navy-primary text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
+            className="bg-fb-4 text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
           >
             Next
           </button>
           <button
             onClick={endPage}
             disabled={currentPage === Math.ceil(props.tableData.length / itemsPerPage)  || props.tableData.length == 0}
-            className="bg-navy-primary text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
+            className="bg-fb-4 text-white px-4 py-2 rounded-md disabled:bg-gray-300 hover:bg-opacity-95"
           >
             End
           </button>

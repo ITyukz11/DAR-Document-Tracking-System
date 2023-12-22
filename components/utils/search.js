@@ -10,7 +10,7 @@ const fadeInOutVariants = {
 };
 
 const staggerChildren = 0.5; // Adjust as needed
-const itemsPerPage = 12; // Adjust the number of items per page
+const itemsPerPage = 5; // Adjust the number of items per page
 
 
 
@@ -44,18 +44,21 @@ export const Search = (props) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const limitDescription = (description) => {
-    let limitDescription;
+  const sortedItems = currentItems.slice().sort((a, b) => {
+    // Replace 'propertyName' with the actual property you want to sort by
+    const aValue = a.propertyName;
+    const bValue = b.propertyName;
   
-    if (description.length > 10) {
-      limitDescription = description.substring(0, 13) + '...';
+    // Adjust the comparison logic based on your sorting criteria
+    if (aValue < bValue) {
+      return -1;
+    } else if (aValue > bValue) {
+      return 1;
     } else {
-      limitDescription = description;
+      return 0;
     }
-  
-    return limitDescription;
-  };
-  
+  });
+
 
 
   return (
@@ -80,12 +83,12 @@ export const Search = (props) => {
           </div>
         </div>
        
-        <div className='flex flex-row gap-3 flex-wrap justify-center'>
+        <div className='flex flex-row flex-wrap justify-center'>
           <AnimatePresence>
-            {currentItems.length ? (
-              currentItems.map((data, index) => (
+            {sortedItems.length ? (
+              sortedItems.map((data, index) => (
                 <motion.div
-                  className={`flex flex-col gap-5 md:gap-6 xl:gap-9 2xl:gap-16 bg-white rounded-xl h-fit p-4 shadow-md mb-5 w-full cursor-pointer hover:bg-grey-primary`}
+                  className={`flex flex-col hover:bg-fb-2 gap-5 md:gap-6 xl:gap-9 2xl:gap-16 bg-white rounded-xl h-fit p-4 shadow-md mb-5 w-full cursor-pointer hover:bg-grey-primary`}
                   key={data.query_id}
                   initial='initial'
                   animate='animate'
@@ -99,11 +102,12 @@ export const Search = (props) => {
                   }}
                   title={data.description} // Add the title attribute for the tooltip
                 >
-                  <div className='text-left'>
+                  <div className='text-left grid grid-cols-2'>
                     {/* <p><b>Query_id:</b> {data.query_id}</p> */}
-                    <p><b>User:</b> {data.user_id}</p>
-                    <p><b>Date:</b> {data.date}</p>
-                    <p><b>Description:</b> {limitDescription(data.description)}</p>
+                    <p><b>Section/Division: </b> {data.Section_Division}</p>
+                    <p><b>Description: </b> {data.Description}</p>
+                    <p><b>PR Number: </b>{data.PR_Number}</p>
+                    <p ><b>PR Status: </b><label className='text-orange-600'>{data.PR_Status}</label></p>
                   </div>
                 </motion.div>
               ))
@@ -129,8 +133,8 @@ export const Search = (props) => {
             <div className='flex items-center bg-green'>
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className={`mx-1 p-2 w-10 bg-fb-4 text-white rounded-md focus:outline-none ${currentPage === 1 || currentItems.length === 0 ? 'cursor-not-allowed bg-opacity-50' : ''}`}
-                disabled={currentPage === 1 || currentItems.length === 0}
+                className={`mx-1 p-2 w-10 bg-fb-4 text-white rounded-md focus:outline-none ${currentPage === 1 || sortedItems.length === 0 ? 'cursor-not-allowed bg-opacity-50' : ''}`}
+                disabled={currentPage === 1 || sortedItems.length === 0}
               >
                 {'<'}
               </button>
@@ -141,8 +145,8 @@ export const Search = (props) => {
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(filteredData.length / itemsPerPage)))
                 }
-                className={`mx-1 p-2 w-10 bg-fb-4 text-white rounded-md focus:outline-none ${currentPage === Math.ceil(filteredData.length / itemsPerPage) || currentItems.length === 0 ? 'cursor-not-allowed bg-opacity-50' : ''}`}
-                disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage) || currentItems.length === 0}
+                className={`mx-1 p-2 w-10 bg-fb-4 text-white rounded-md focus:outline-none ${currentPage === Math.ceil(filteredData.length / itemsPerPage) || sortedItems.length === 0 ? 'cursor-not-allowed bg-opacity-50' : ''}`}
+                disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage) || sortedItems.length === 0}
               >
                 {'>'}
               </button>
@@ -150,10 +154,10 @@ export const Search = (props) => {
           )}
 
         </div>
-        {/* <ViewModal 
+        <ViewModal 
         isOpen={showViewQueryModal} 
         isClose={()=> setShowViewQueryModal(!showViewQueryModal)}
-        data={selectedData}/> */}
+        data={selectedData}/>
       </Layout>
   
 

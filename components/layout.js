@@ -9,6 +9,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import Link from "next/link";
 import Login from "./utils/modals/Login";
 import Cookies from 'js-cookie';
+import FormModal from "./utils/modals/formmodal";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -19,6 +20,8 @@ export default function Layout({ children }) {
 
 
     const [loginOpen, setLoginOpen] = useState(false);
+    const [prForm, setPrForm] = useState(false);
+
     const [userSubMenu, setUserSubMenu] = useState(false)
 
     const { isMobile, currentTab, handlesCurrentTab } = useMenu();
@@ -26,11 +29,12 @@ export default function Layout({ children }) {
             userData } = useDatas();
             console.log("USERDATA: ",userData.length>0)
     const tabs = [
-        { id: 0, path: "/document", label: 'Document', image: userData?<FaChevronDown size={15}/>:''},
-        { id: 1, path: "/table", label: 'Table', image: '' },
-        { id: 2, path: "/logs", label: 'Logs', image: '' },
-        { id: 3, path: "/reports", label: 'Reports', image: '' },
-        { id: 4, path: "/configuration", label: 'Configuration', image: '' },
+        { id: 0, path: "/dashboard", label: 'Dashboard'},
+        { id: 1, path: "/document", label: 'Document', image: userData?<FaChevronDown size={15}/>:''},
+        { id: 2, path: "/table", label: 'Table', image: '' },
+        { id: 3, path: "/logs", label: 'Logs', image: '' },
+        { id: 4, path: "/reports", label: 'Reports', image: '' },
+        { id: 5, path: "/configuration", label: 'Configuration', image: '' },
     ];
 
     useEffect(() => {
@@ -69,18 +73,22 @@ export default function Layout({ children }) {
             description: 'Efficiently manage and track purchase orders',
             href: '##',
             icon: <FaBox size={32}/>,
+            button: ()=> setPrForm(true)
         },
         {
             name: 'Travel Order',
             description: 'Create and manage travel orders for employees',
             href: '##',
             icon: <SiYourtraveldottv size={35}/>,
+            button: ()=> console.log('Travel Order')
         },
         {
             name: 'Salary Processing',
             description: 'Track and process employee salaries with ease',
             href: '##',
             icon: <GiTakeMyMoney size={35}/>,
+            button: ()=> console.log('Salary Processing')
+
         },
     ]
 
@@ -104,8 +112,9 @@ export default function Layout({ children }) {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const handleTabMouseEnter = (tabId) => {
+        if (tabId === 1) setIsPopoverOpen(true);
         handlesCurrentTab(tabId);
-        if (tabId === 0) setIsPopoverOpen(true);
+
     };
 
 
@@ -209,7 +218,7 @@ export default function Layout({ children }) {
 
                        <Transition
                            as={Fragment}
-                           show={isPopoverOpen && currentTab === 0}
+                           show={isPopoverOpen && currentTab === 1}
                            enter="transition ease-out duration-200"
                            enterFrom="opacity-0 translate-y-1"
                            enterTo="opacity-100 translate-y-0"
@@ -223,8 +232,8 @@ export default function Layout({ children }) {
                                        {documentSubMenus.map((item) => (
                                            <a
                                                key={item.name}
-                                               href={item.href}
-                                               className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-fb-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                                               className="cursor-pointer -m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-fb-2 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                                               onClick={item.button}
                                            >
                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center sm:h-12 sm:w-12">
                                                {item.icon}
@@ -268,6 +277,7 @@ export default function Layout({ children }) {
                 <div className={` mt-20 ${isMobile ? 'mx-5' : isLaptop ? 'mx-40' : 'mx-56'}`}>{children}</div>
             </main>
             <Login isOpen={loginOpen} isClose={()=> setLoginOpen(!loginOpen)}/>
+            <FormModal isOpen={prForm} isClose={()=> setPrForm(!prForm)}/>
         </div>
     );
 }
