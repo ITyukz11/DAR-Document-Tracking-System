@@ -2,6 +2,7 @@ import { useDatas } from '@/pages/api/Datas';
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
+import formatDate from '../formatDate';
 
 
 export default function UpdateModal(props) {
@@ -32,25 +33,155 @@ export default function UpdateModal(props) {
     })
   }, [props])
 
+
   // Array representing form fields
   const formFields = [
-    { label: 'Section/Division', name: 'Section_Division', disabled: true },
-    { label: 'Description', name: 'Description', disabled: true },
-    { label: 'PR Number', name: 'PR_Number', hidden: props.selectedData.PR_Number ? 'hidden' : '' },
-    { label: 'RFQ', name: 'RFQ', hidden: props.selectedData.PR_Number && !props.selectedData.RFQ ? '' : 'hidden', required: !props.selectedData.PR_Number },
-    { label: 'Canvass', name: 'Canvass', hidden: props.selectedData.RFQ && !props.selectedData.Canvass ? '' : 'hidden', required: !(props.selectedData.RFQ && props.selectedData.Canvass) },
-    { label: 'Abstract', name: 'Abstract', hidden: props.selectedData.Canvass && !props.selectedData.Abstract ? '' : 'hidden', required: !(props.selectedData.Canvass && props.selectedData.Abstract) },
-    { label: 'PO', name: 'PO', hidden: props.selectedData.Abstract && !props.selectedData.PO ? '' : 'hidden', required: !(props.selectedData.Abstract && props.selectedData.PO) },
-    { label: 'Delivery', name: 'Delivery', hidden: props.selectedData.PO && !props.selectedData.Delivery ? '' : 'hidden', required: !(props.selectedData.PO && props.selectedData.Delivery) },
-    { label: 'IAR', name: 'IAR', hidden: props.selectedData.Delivery && !props.selectedData.IAR ? '' : 'hidden', required: !(props.selectedData.Delivery && props.selectedData.IAR) },
-    { label: 'DV', name: 'DV', hidden: props.selectedData.IAR && !props.selectedData.DV ? '' : 'hidden', required: !(props.selectedData.IAR && props.selectedData.DV) },
-    { label: 'OBR 1', name: 'OBR_1', hidden: props.selectedData.DV && !props.selectedData.OBR_1 ? '' : 'hidden', required: !(props.selectedData.DV && props.selectedData.OBR_1) },
-    { label: 'OBR 2', name: 'OBR_2', hidden: props.selectedData.OBR_1 && !props.selectedData.OBR_2 ? '' : 'hidden', required: !(props.selectedData.OBR_1 && props.selectedData.OBR_2) },
-    { label: 'Controlled OBR 3', name: 'Controlled_OBR_3', hidden: props.selectedData.OBR_2 && !props.selectedData.Controlled_OBR_3 ? '' : 'hidden', required: !(props.selectedData.OBR_2 && props.selectedData.Controlled_OBR_3) },
-    { label: 'Disbursement', name: 'Disbursement', hidden: props.selectedData.Controlled_OBR_3 && !props.selectedData.Disbursement ? '' : 'hidden', required: !(props.selectedData.Controlled_OBR_3 && props.selectedData.Disbursement) },
-    { label: 'Approval', name: 'Approval', hidden: props.selectedData.Disbursement && !props.selectedData.Approval ? '' : 'hidden', required: !(props.selectedData.Disbursement && props.selectedData.Approval) },
-    { label: 'Cheque', name: 'Cheque', hidden: props.selectedData.Approval && !props.selectedData.Cheque ? '' : 'hidden', required: !(props.selectedData.Approval && props.selectedData.Cheque) },
-    { label: 'Cheque Number', name: 'Cheque_Number', hidden: props.selectedData.Cheque && !props.selectedData.Cheque_Number ? '' : 'hidden', required: !(props.selectedData.Cheque && props.selectedData.Cheque_Number) },
+    {
+      label: 'Section/Division',
+      name: 'Section_Division',
+      disabled: true,
+      date:props.selectedData.Date_Encoded? formatDate(props.selectedData.Date_Encoded):''
+    },
+
+    {
+      label: 'Description',
+      name: 'Description',
+      disabled: true,
+      date:props.selectedData.Date_Encoded? formatDate(props.selectedData.Date_Encoded):''
+    },
+
+    {
+      label: 'PR Number',
+      name: 'PR_Number',
+      disabled: props.selectedData.PR_Number ? true : '',
+      date:props.selectedData.PR_Number_Date? formatDate(props.selectedData.PR_Number_Date):''
+    },
+
+    {
+      label: 'RFQ',
+      name: 'RFQ',
+      hidden: props.selectedData.PR_Number ? '' : 'hidden',
+      required: !props.selectedData.PR_Number,
+      disabled: props.selectedData.RFQ ? true : '',
+      date:props.selectedData.RFQ_Date? formatDate(props.selectedData.RFQ_Date):''
+    },
+
+    {
+      label: 'Canvass',
+      name: 'Canvass',
+      hidden: props.selectedData.RFQ ? '' : 'hidden',
+      required: !(props.selectedData.RFQ && props.selectedData.Canvass),
+      disabled: props.selectedData.Canvass ? true : '',
+      date:props.selectedData.Canvass_Date? formatDate(props.selectedData.Canvass_Date):''
+    },
+
+    {
+      label: 'Abstract',
+      name: 'Abstract',
+      hidden: props.selectedData.Canvass ? '' : 'hidden',
+      required: !(props.selectedData.Canvass && props.selectedData.Abstract),
+      disabled: props.selectedData.Abstract ? true : '',
+      date:props.selectedData.Abstract_Date? formatDate(props.selectedData.Abstract_Date):''
+    },
+
+    {
+      label: 'PO',
+      name: 'PO',
+      hidden: props.selectedData.Abstract ? '' : 'hidden',
+      required: !(props.selectedData.Abstract && props.selectedData.PO),
+      disabled: props.selectedData.PO ? true : '',
+      date:props.selectedData.PO_Date? formatDate(props.selectedData.PO_Date):''
+    },
+
+    {
+      label: 'Delivery',
+      name: 'Delivery',
+      hidden: props.selectedData.PO ? '' : 'hidden',
+      required: !(props.selectedData.PO && props.selectedData.Delivery),
+      disabled: props.selectedData.Delivery ? true : '',
+      date: props.selectedData.Delivery_Date ? formatDate(props.selectedData.Delivery_Date) : ''
+    },
+    
+    {
+      label: 'IAR',
+      name: 'IAR',
+      hidden: props.selectedData.Delivery ? '' : 'hidden',
+      required: !(props.selectedData.Delivery && props.selectedData.IAR),
+      disabled: props.selectedData.IAR ? true : '',
+      date: props.selectedData.IAR_Date ? formatDate(props.selectedData.IAR_Date) : ''
+    },
+    
+    {
+      label: 'DV',
+      name: 'DV',
+      hidden: props.selectedData.IAR ? '' : 'hidden',
+      required: !(props.selectedData.IAR && props.selectedData.DV),
+      disabled: props.selectedData.DV ? true : '',
+      date: props.selectedData.DV_Date ? formatDate(props.selectedData.DV_Date) : ''
+    },
+    
+    {
+      label: 'OBR 1',
+      name: 'OBR_1',
+      hidden: props.selectedData.DV ? '' : 'hidden',
+      required: !(props.selectedData.DV && props.selectedData.OBR_1),
+      disabled: props.selectedData.OBR_1 ? true : '',
+      date: props.selectedData.OBR_1_Date ? formatDate(props.selectedData.OBR_1_Date) : ''
+    },
+    
+    {
+      label: 'OBR 2',
+      name: 'OBR_2',
+      hidden: props.selectedData.OBR_1 ? '' : 'hidden',
+      required: !(props.selectedData.OBR_1 && props.selectedData.OBR_2),
+      disabled: props.selectedData.OBR_2 ? true : '',
+      date: props.selectedData.OBR_2_Date ? formatDate(props.selectedData.OBR_2_Date) : ''
+    },
+    
+    {
+      label: 'Controlled OBR 3',
+      name: 'Controlled_OBR_3',
+      hidden: props.selectedData.OBR_2 ? '' : 'hidden',
+      required: !(props.selectedData.OBR_2 && props.selectedData.Controlled_OBR_3),
+      disabled: props.selectedData.Controlled_OBR_3 ? true : '',
+      date: props.selectedData.Controlled_OBR_3_Date ? formatDate(props.selectedData.Controlled_OBR_3_Date) : ''
+    },
+    
+    {
+      label: 'Disbursement',
+      name: 'Disbursement',
+      hidden: props.selectedData.Controlled_OBR_3 ? '' : 'hidden',
+      required: !(props.selectedData.Controlled_OBR_3 && props.selectedData.Disbursement),
+      disabled: props.selectedData.Disbursement ? true : '',
+      date: props.selectedData.Disbursement_Date ? formatDate(props.selectedData.Disbursement_Date) : ''
+    },
+    
+    {
+      label: 'Approval',
+      name: 'Approval',
+      hidden: props.selectedData.Disbursement ? '' : 'hidden',
+      required: !(props.selectedData.Disbursement && props.selectedData.Approval),
+      disabled: props.selectedData.Approval ? true : '',
+      date: props.selectedData.Approval_Date ? formatDate(props.selectedData.Approval_Date) : ''
+    },
+    
+    {
+      label: 'Cheque',
+      name: 'Cheque',
+      hidden: props.selectedData.Approval ? '' : 'hidden',
+      required: !(props.selectedData.Approval && props.selectedData.Cheque),
+      disabled: props.selectedData.Cheque ? true : '',
+      date: props.selectedData.Cheque_Date ? formatDate(props.selectedData.Cheque_Date) : ''
+    },
+    
+    {
+      label: 'Cheque Number',
+      name: 'Cheque_Number',
+      hidden: props.selectedData.Cheque ? '' : 'hidden',
+      required: !(props.selectedData.Cheque && props.selectedData.Cheque_Number),
+      disabled: props.selectedData.Cheque_Number ? true : '',
+      date: props.selectedData.Cheque_Number_Date ? formatDate(props.selectedData.Cheque_Number_Date) : ''
+    },   
   ];
 
   // Event handler for form submission
@@ -276,14 +407,18 @@ export default function UpdateModal(props) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-96 transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-auto transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
                   <h1 className='font-semibold border-b-2 mb-2'>UPDATE PURCHASED REQUEST FORM</h1>
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {formData ? formFields.map((field, index) => (
-                      <div key={index} className="mb-4">
-                        <label htmlFor={field.name} className={`block text-sm font-bold mb-2 ${field.hidden} `}>
-                          {field.label}:
-                        </label>
+                      field.hidden ? null : (
+                        <div key={index} className={`mb-4 ${index % 5 === 4 ? 'md:mt-8 lg:mt-0' : ''}`}>
+                          <div>
+                          <div htmlFor={field.name} className={`block text-left text-sm mb-2 ${field.hidden} `}>
+                           <label className='font-bold'>{field.label}:</label>
+                           <label>{field.date}</label>
+                          </div>
+                          
                         {field.type === 'textarea' ? (
                           <textarea
                             id={field.name}
@@ -327,14 +462,20 @@ export default function UpdateModal(props) {
                             disabled={field.disabled || field.hidden} // Disable hidden fields
                           />
                         )}
-                      </div>
+                          </div>
+                     
+                        </div>
+                      )
+
                     )) : ''}
-                    <button
-                      type="submit"
-                      className="bg-fb-4 hover:bg-opacity-90 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                      Submit
-                    </button>
+                    <div className="flex justify-center items-center">
+                      <button
+                        type="submit"
+                        className="bg-fb-4 hover:bg-opacity-90 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      >
+                        Submit
+                      </button>
+                    </div>
                   </form>
                 </Dialog.Panel>
               </Transition.Child>

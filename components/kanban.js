@@ -1,11 +1,14 @@
 import { useDatas } from '@/pages/api/Datas';
 import React, { useEffect, useState } from 'react';
 import UpdateModal from './utils/modals/updatemodal';
+import UpdateApprovedModal from './utils/modals/updateapprovalmodal';
 
 export default function Kanban() {
   const { prDatas, getPrMonitoringDatas} = useDatas();
   const [selectedData, setSelectedData]=useState([])
   const [showUpdateModal,  setShowUpdateModal]=useState(false)
+  const [showUpdateApprovalModal, setShowUpdateApprovalModal] = useState(false)
+
   useEffect(() => {
     getPrMonitoringDatas()
   }, [])
@@ -24,7 +27,7 @@ export default function Kanban() {
     // Assuming data.Date_Encoded is a valid Date object
     const encodedDate = new Date(date);
     const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate()+4);
+    currentDate.setDate(currentDate.getDate());
 
     // Calculate the difference in days
     const timeDifference = currentDate.getTime() - encodedDate.getTime();
@@ -34,7 +37,7 @@ export default function Kanban() {
   }
 
   const renderKanbanData = (dataInfo, dateData, description, expireDay) =>
-    (<div className={`${dataStyle} ${getDaysPassed(dateData)>=expireDay?'bg-red-500':''}`}>
+    (<div className={`${dataStyle(dataInfo)} ${getDaysPassed(dateData)>=expireDay?'bg-red-500':''}`}>
     <div><b>Description:</b> {description} </div>
     <div><b>Status:</b> {dataInfo}</div>
     <div><b>Date:</b> {new Date(dateData).toLocaleString('en-US', { dateStyle: 'short' })}</div>
@@ -43,8 +46,8 @@ export default function Kanban() {
   </div>)
   
 
-  const dataStyle = () =>
-  `flex h-fit flex-col flex-wrap data-cell bg-blue-200 p-2 rounded text-left overflow-auto hover:bg-opacity-70 cursor-pointer`;
+  const dataStyle = (dataInfo) =>
+  `${dataInfo == 'Waiting Approval'?'bg-green-300':'bg-blue-300'} flex h-fit flex-col shadow-md flex-wrap data-cell p-2 rounded text-left overflow-auto hover:bg-opacity-70 cursor-pointer`;
 
   // Function to render data based on column index
   const renderData = (data, columnIndex) => {
@@ -67,15 +70,16 @@ export default function Kanban() {
                data.Controlled_OBR_3 && !data.Disbursement? renderKanbanData('Controlled_OBR_3', data.Controlled_OBR_3_Date, data.Description, 1):''
           
       case 3: //RCAO COLUMN
-        return data.OBR_2 && !data.Controlled_OBR_3?  renderKanbanData('OBR_2', data.OBR_2_Date, data.Description, 1):''
-      
+        return data.OBR_2 && !data.Controlled_OBR_3?  renderKanbanData('OBR_2', data.OBR_2_Date, data.Description, 1):
+              !data.PR_Number ? renderKanbanData('Waiting Approval',data.Date_Encoded,data.Description,1) : ''
       case 4: //ACCOUNTING COLUMN
       return data.Disbursement && !data.Approval?  renderKanbanData('Disbursement', data.Disbursement_Date, data.Description, 1):''
 
-      case 5: //ACCOUNTING COLUMN
-      return data.Approval && !data.Cheque?  renderKanbanData('Approval', data.Approval_Date, data.Description, 1):''
+      case 5: //RDO RDA COLUMN
+      return data.Approval && !data.Cheque?  renderKanbanData('Approval', data.Approval_Date, data.Description, 1):
+            !data.PR_Number ? renderKanbanData('Waiting Approval',data.Date_Encoded,data.Description,1) : ''
 
-      case 6: //ACCOUNTING COLUMN
+      case 6: //CASHIER COLUMN
       return  data.Cheque && !data.Cheque_Number?  renderKanbanData('Cheque', data.Cheque_Date, data.Description, 1):''
 
       // Add more cases as needed for each column
@@ -83,16 +87,32 @@ export default function Kanban() {
         return null;
     }
   };
+
+  const handleKanBanDataClick = (data) => {
+
+    console.log("handleKanBanDataClick data: ", data)
+    setSelectedData(data);
+    console.log("data.RCAO_Approved == null: ", data.RCAO_Approved == null)
+    if (data.RCAO_Approved == null) {
+      setShowUpdateModal(true);
+
+
+    } else {
+      setShowUpdateApprovalModal(true);
+
+    }
+  };
+  
 console.log("columns.length: ", columns.length)
   return (
-    <div className='mt-36 '>
+    <div className='mt-36'>
       <div className={`grid grid-cols-7 overflow-auto `}>
         {columns.map((column, index) => (
-          <div key={index} className={`border p-2 `}>
-             <div className={`border-b-2 text-center px-auto text-lg mb-2 font-bold`}>{column}</div>
+          <div key={index} className={`border p-2 border-fb-3 rounded-lg shadow-md`} style={{minHeight:'150px'}}>
+             <div className={`border-b-2 border-b-gray-500 text-center px-auto text-lg mb-2 text-fb-0 font-bold overflow-hidden bg-fb-4 rounded-md shadow-sm`} >{column}</div>
             {prDatas &&
               prDatas.map((data, dataIndex) => (
-                <div key={dataIndex} className='mb-2 h-fit cursor-pointer' onClick={()=> {setSelectedData(data);setShowUpdateModal(true)}}>
+                <div key={dataIndex} className='mb-2 h-fit   cursor-pointer' onClick={()=> handleKanBanDataClick(data)} >
                   {renderData(data, index)}
                 </div>
               ))}
@@ -100,6 +120,7 @@ console.log("columns.length: ", columns.length)
         ))}
       </div>
       <UpdateModal isOpen={showUpdateModal} isClose={()=> setShowUpdateModal(!showUpdateModal)} selectedData={selectedData}/>
+      <UpdateApprovedModal isOpen={showUpdateApprovalModal} isClose={()=> setShowUpdateApprovalModal(!showUpdateApprovalModal)} selectedData={selectedData}/>
     </div>
   );
 }

@@ -125,7 +125,7 @@ export default function Layout({ children }) {
             <header className="flex flex-col text-grey-primary fixed top-0 left-0 right-0 h-36 items-center justify-center font-bold z-1000">
                 <div className="bg-fb-4 w-full h-24 justify-center flex items-center text-center">
                     {userData.length > 0 ?
-                        <div className="absolute  right-5 flex flex-row items-center gap-5 rounded-full p-2 cursor-pointer bg-fb-0 hover:bg-opacity-90"
+                        <div className="absolute text-fb-4 right-5 flex flex-row items-center gap-5 rounded-full p-2 cursor-pointer bg-fb-0 hover:bg-opacity-90"
                         onClick={()=>setUserSubMenu(!userSubMenu)}>
                             <FaUserCircle size={25}/>
                             <label className="cursor-pointer">{userData}</label>
@@ -145,7 +145,7 @@ export default function Layout({ children }) {
                 </div>
                 <div className="font-normal w-full h-full gap-7 bg-blue justify-center flex items-center text-center bg-fb-1">
                     <Tab.Group
-                        className="border-b border-gray-200"
+                        className="border-b border-fb-3 shadow-sm"
                         defaultIndex={0}
                         selectedIndex={currentTab}
                     >
@@ -158,11 +158,9 @@ export default function Layout({ children }) {
                                         <div
                                             className={generateTabClassName(currentTab === tab.id)}
                                             onClick={() => handlesCurrentTab(tab.id)}>
-
                                             {tab.label}
                                             <div className="rounded-full" onMouseEnter={() => handleTabMouseEnter(tab.id)}>
                                                 {tab.image}
-
                                             </div>
                                         </div>
                                     </Tab>
